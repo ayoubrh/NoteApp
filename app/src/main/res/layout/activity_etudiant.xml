@@ -1,0 +1,194 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.instinctcoder.sqlitedb.StudentDetail$PlaceholderFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/Nom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/btnSave"
+        android:layout_alignBottom="@+id/Prenom"
+        android:layout_alignTop="@+id/Prenom"
+        android:layout_toLeftOf="@+id/btnSave" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/Prenom"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/btnDelete"
+        android:layout_above="@+id/Email"
+        android:layout_alignRight="@+id/Email"
+        android:layout_alignEnd="@+id/Email" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/Email"
+        android:layout_above="@+id/NoteC1"
+        android:layout_alignRight="@+id/editNoteC1"
+        android:layout_alignEnd="@+id/editNoteC1"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toRightOf="@+id/NoteF"
+        android:layout_toEndOf="@+id/NoteF" />
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Email"
+        android:id="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Note Controle 1 :"
+        android:id="@+id/NoteC1"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Note Controle 2 :"
+        android:id="@+id/NoteC2"
+        android:layout_below="@+id/NoteC1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Autre :"
+        android:id="@+id/Autre"
+        android:layout_below="@+id/NoteC2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Note Examen :"
+        android:id="@+id/NoteEx"
+        android:layout_below="@+id/Autre"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Note Final :"
+        android:id="@+id/NoteF"
+        android:layout_below="@+id/NoteEx"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="29dp" />
+
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editNoteC1"
+        android:layout_alignBottom="@+id/NoteC1"
+        android:layout_toRightOf="@+id/NoteC1"
+        android:layout_toEndOf="@+id/NoteC1" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editNoteC2"
+        android:layout_alignBottom="@+id/NoteC2"
+        android:layout_toRightOf="@+id/NoteC2"
+        android:layout_toEndOf="@+id/NoteC2" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editAutre"
+        android:layout_alignBottom="@+id/Autre"
+        android:layout_toRightOf="@+id/NoteC2"
+        android:layout_toEndOf="@+id/NoteC2" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editNoteEx"
+        android:layout_alignBottom="@+id/NoteEx"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/editNoteEx"
+        android:layout_alignStart="@+id/editNoteEx" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editNoteF"
+        android:layout_alignBottom="@+id/NoteF"
+        android:layout_alignLeft="@+id/editAutre"
+        android:layout_alignStart="@+id/editAutre" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enregistrer"
+        android:id="@+id/btnSave"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/btnClose" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retour"
+        android:id="@+id/btnClose"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supprimer"
+        android:id="@+id/btnDelete"
+        android:layout_alignTop="@+id/btnSave"
+        android:layout_toLeftOf="@+id/btnSave" />
+
+</RelativeLayout>

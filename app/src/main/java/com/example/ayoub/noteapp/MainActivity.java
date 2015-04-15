@@ -32,8 +32,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -55,7 +53,9 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusShare;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,7 +66,7 @@ import org.json.JSONObject;
  * users profile information.
  */
 public class MainActivity extends ActionBarActivity implements View.OnClickListener,
-        ConnectionCallbacks, OnConnectionFailedListener{
+        ConnectionCallbacks, OnConnectionFailedListener, PlusClient.OnPeopleLoadedListener{
 
     //private GoogleApiClient mGoogleApiClient;
 
@@ -87,8 +87,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ConnectionResult mConnectionResult;
     Button ShareButton,GetData,ok_btn;
     Dialog get_data_dialog;
-    TextView name,url,id;
-    String lname,email;
+    TextView name,url;
+    String fname,lname,email;
+    String id = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,170 +116,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mConnectionProgressDialog = new ProgressDialog(this);
         System.out.println("ccccccccccccccccccccccccccccccccccc");
 
-        mConnectionProgressDialog.setMessage("Signing in...");
+        mConnectionProgressDialog.setMessage("Connexion En Cours ...");
         System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         System.out.println("fffffffffffffffffffffffffffffffffff");
 
-        ShareButton = (Button) findViewById(R.id.post_button);
-        System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
 
-        GetData = (Button)findViewById(R.id.get_data_button);
-        System.out.println("llllllllllllllllllllllllllllllllll");
-
-        GetData.setOnClickListener(new View.OnClickListener() {
-            String disp_name,disp_url,disp_id;
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                if( mPlusClient.isConnected())
-                {
-                    System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-
-                    get_data_dialog = new Dialog(MainActivity.this);
-                    get_data_dialog.setContentView(R.layout.get_data_frag);
-                    get_data_dialog.setTitle("User Details");
-                    System.out.println("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
-
-                    name = (TextView)get_data_dialog.findViewById(R.id.get_name);
-                    url = (TextView)get_data_dialog.findViewById(R.id.get_url);
-                    id = (TextView)get_data_dialog.findViewById(R.id.get_id);
-                    ok_btn = (Button)get_data_dialog.findViewById(R.id.ok_button);
-                    System.out.println("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-
-                    ok_btn.setOnClickListener(new OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-                            // TODO Auto-generated method stub
-                            get_data_dialog.cancel();
-                        }
-                    });
-                    System.out.println("llllllllllllllllllllllllllllllllllllll");
-
-                    Person currentPerson = mPlusClient.getCurrentPerson();
-                    System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
-
-                    disp_name = currentPerson.getDisplayName();
-                    lname = currentPerson.getDisplayName();
-                    disp_url = currentPerson.getUrl();
-                    disp_id = currentPerson.getId();
-                    System.out.println("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-
-                    name.setText(disp_name);
-                    System.out.println("Nome : "+lname);
-                    url.setText(disp_url);
-                    id.setText(disp_id);
-                    email=mPlusClient.getAccountName();
-                    System.out.println("Email : "+email);
-
-                    NetAsync(v);
-
-                    get_data_dialog.show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please Sign In", Toast.LENGTH_LONG).show();
-                }}
-        });
-        ShareButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Launch the Google+ share dialog with attribution to your app.
-                Intent shareIntent = new PlusShare.Builder(MainActivity.this)
-                        .setType("text/plain")
-                        .setText("")
-                        //.setContentUrl(Uri.parse("http://www.learn2crack.com"))
-                        .getIntent();
-                startActivityForResult(shareIntent, 0);
-            }
-        });
     }
 
 
 
-    private class NetCheck extends AsyncTask<String, String, Boolean>{
-        private ProgressDialog nDialog;
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbb00000000000000000000000");
-
-            nDialog = new ProgressDialog(MainActivity.this);
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb11111111111111111");
-
-            nDialog.setMessage("Loading..");
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb+++++++++++++++++++++++++++++");
-
-            nDialog.setTitle("Checking Network");
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-------------------------");
-
-            nDialog.setIndeterminate(false);
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb*******************************");
-
-            nDialog.setCancelable(true);
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb///////////////////////////////////1");
-
-            nDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(String... args){
-/**
-  * Gets current device state and checks for working internet connection by trying Google.
-  **/
-            System.out.println("bbbbbbbbbbbbbbbbbbbbb22222222222222222222222222");
-
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbb333333333333333333333");
-
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbb444444444444444444444");
-
-            if (netInfo != null && netInfo.isConnected()) {
-                try {
-                    System.out.println("bbbbbbbbbbbbbbbbbbbbbb555555555555555555555");
-
-                    URL url = new URL("http://www.google.com");
-                    HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-                    System.out.println("bbbbbbbbbbbbbbbbbbbbbb6666666666666666666666666");
-
-                    urlc.setConnectTimeout(3000);
-                    System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbb77777777777777777777777");
-
-                    urlc.connect();
-                    System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb88888888888888888888888");
-
-                    if (urlc.getResponseCode() == 200) {
-                        return true;
-                    }
-                } catch (MalformedURLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                    System.out.println("Error b 1 : "+ e1.getMessage());
-
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    System.out.println("Error b 2 : "+e.getMessage());
-
-                }
-            }
-            return false;
-        }
-        @Override
-        protected void onPostExecute(Boolean th){
-            if(th == true){
-                nDialog.dismiss();
-                System.out.println("bbbbbbbbbbbbbb999999999999999999");
-
-                new ProcessRegister().execute();
-                System.out.println("bbbbbbbbbbbbbbbbbbbbb101010101010101010010");
-
-            }
-            else{
-                nDialog.dismiss();
-            }
-        }
-    }
     private class ProcessRegister extends AsyncTask<String, String, JSONObject>{
 /**
   * Defining Process dialog
@@ -293,11 +141,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             pDialog = new ProgressDialog(MainActivity.this);
             pDialog.setTitle("Contacting Servers");
-            pDialog.setMessage("Registering ...");
+            pDialog.setMessage("Chargement ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             System.out.println("cccccccccccccccccccccccc11111111111111111111111");
-
             pDialog.show();
         }
         @Override
@@ -307,7 +154,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             UserFunctions userFunction = new UserFunctions();
             System.out.println("ccccccccccccccccccccccccccccc33333333333333333333");
 
-            JSONObject json = userFunction.registerProf(lname,lname,email);
+            Person currentPerson = mPlusClient.getCurrentPerson();
+
+            fname = currentPerson.getName().getFamilyName();
+            lname = currentPerson.getName().getGivenName();
+            email=mPlusClient.getAccountName();
+
+            JSONObject json = userFunction.registerProf(fname,lname,email);
             System.out.println("ccccccccccccccccccccc44444444444444444444");
 
             return json;
@@ -317,6 +170,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             /**
                      * Checks for success message.
                      **/
+
+
             try {
                 System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
                 if (json.getString(KEY_SUCCESS) != null) {
@@ -325,43 +180,28 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     String res = json.getString(KEY_SUCCESS);
                     System.out.println("ccccccccccccccc66666666666666666666");
 
-                    String red = json.getString(KEY_ERROR);
+                    if(res == "true"){
+                        id = json.getString("id");
+                        System.out.println("id  : "+id);
+                    }
+
+                    else{
+                        id=identif(json);
+                        System.out.println("id  : "+id);
+                    }
+
+                    //String red = json.getString(KEY_ERROR);
                     System.out.println("cccccccccccccccccccc777777777777777777777");
+                    pDialog.dismiss();
 
-                    if(Integer.parseInt(res) == 1){
-                        pDialog.setTitle("Getting Data");
-                        pDialog.setMessage("Loading Info");
-                        //DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        System.out.println("cccccccccccccccccccc888888888888888888888");
 
-                        //JSONObject json_user = json.getJSONObject("Professeur");
-                        /**
-                                                      * Removes all the previous data in the SQlite database
-                                                      **/
-                        //UserFunctions logout = new UserFunctions();
-                        //logout.logoutUser(getApplicationContext());
-                        //db.addUser(json_user.getString(KEY_FIRSTNAME),json_user.getString(KEY_LASTNAME),json_user.getString(KEY_EMAIL),json_user.getString(KEY_USERNAME),json_user.getString(KEY_UID),json_user.getString(KEY_CREATED_AT));
-                        /**
-                                                      * Stores registered data in SQlite Database
-                                                      * Launch Registered screen
-                                                      **/
-                        //Intent registered = new Intent(getApplicationContext(), Registered.class);
-                        /**
-                                                      * Close all views before launching Registered screen
-                                                     **/
-                        //registered.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        pDialog.dismiss();
-                        //startActivity(registered);
-                        finish();
-                    }
-                    else if (Integer.parseInt(red) ==2){
-                        pDialog.dismiss();
-                    }
-                    else if (Integer.parseInt(red) ==3){
-                        pDialog.dismiss();
-                    }
-                }
-                else{
+                    Intent objIndent = new Intent(getApplicationContext(),ListEtudiant.class);
+                    objIndent.putExtra("PROF_ID", Integer.parseInt(id));
+                    startActivity(objIndent);
+
+
+
+                }else{
                     pDialog.dismiss();
                 }
             } catch (JSONException e) {
@@ -373,7 +213,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 
-    public void NetAsync(View view){
+    public void NetAsync(){
         System.out.println("aaaaaaaaaaaaaaaa00000000000000000000");
 
         new ProcessRegister().execute();
@@ -381,6 +221,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+
+
+    public String identif(JSONObject json) {
+        JSONArray prof = null;
+        String id = null;
+        try {
+            prof = json.getJSONArray("professeur");
+            JSONObject c = prof.getJSONObject(0);
+            id = c.getString("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //JSONObject c = innerArray.getJSONObject(0);
+        // Storing  JSON item in a Variable
+
+        return id;
+    }
 
 
 
@@ -411,13 +268,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     protected void onStart() {
+        System.out.println("ssssssssssssssssssssss00000000000000");
+
         super.onStart();
-        mPlusClient.connect();
+        System.out.println("ssssssssssssssssssssss11111111111111111111111111");
+
+        //mPlusClient.connect();
     }
 
     @Override
     protected void onStop() {
+
         super.onStop();
+
         mPlusClient.disconnect();
     }
 
@@ -442,7 +305,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
+            System.out.println("6666666666666666666666666666666666");
+
             mConnectionResult = null;
+            System.out.println("777777777777777777777777777777777");
+
             mPlusClient.connect();
         }
     }
@@ -450,7 +317,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onConnected(Bundle connectionHint) {
         String accountName = mPlusClient.getAccountName();
+        System.out.println("444444444444444444444444444444444444");
+
         Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_LONG).show();
+        System.out.println("555555555555555555555555555555555555");
+        NetAsync();
+
+
     }
 
     @Override
@@ -463,10 +336,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId() == R.id.sign_in_button && !mPlusClient.isConnected()) {
             if (mConnectionResult == null) {
+                System.out.println("000000000000000000000000000000000");
+
                 mConnectionProgressDialog.show();
+                System.out.println("11111111111111111111111111111111111111");
+                mPlusClient.connect();
+
+
             } else {
                 try {
+                    System.out.println("22222222222222222222222222222222222222222222");
+
                     mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+                    System.out.println("3333333333333333333333333333333333");
+                    NetAsync();
+                    System.out.println("101010101010101010101010101010101010");
+
+
                 } catch (SendIntentException e) {
                     // Try connecting again.
                     mConnectionResult = null;
@@ -475,6 +361,30 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         }
     }
+
+    @Override
+    public void onPeopleLoaded(ConnectionResult status, PersonBuffer personBuffer,
+                               String nextPageToken) {
+        if (status.getErrorCode() == ConnectionResult.SUCCESS) {
+            try {
+                int i=0;
+                while (personBuffer.get(i)!=null) {
+                    Log.d(TAG, "Display Name: " + personBuffer.get(i).getDisplayName());
+                    System.out.println("looaaaaaaaaaaaaaaaadddddd"+personBuffer.get(i).getDisplayName());
+                    System.out.println("looaaaaaaaaaaaaaaaadddddd"+personBuffer.get(i).getName().getFamilyName());
+                    //System.out.println("looaaaaaaaaaaaaaaaadddddd"+personBuffer.get(i).getName().getGivenName());
+                    //System.out.println("looaaaaaaaaaaaaaaaadddddd"+personBuffer.get(i).getAboutMe());
+                    i++;
+                }
+            } finally {
+                personBuffer.close();
+            }
+        } else {
+            Log.e(TAG, "Error listing people: " + status.getErrorCode());
+        }
+    }
+
+
 
 }
 

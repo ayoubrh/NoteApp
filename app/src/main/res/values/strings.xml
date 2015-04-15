@@ -10,7 +10,6 @@
     <string name="circles_title">Visible circles:</string>
     <string name="sign_out_button_name">Sign out</string>
     <string name="revoke_access_button_name">Revoke</string>
-
     <string name="status_sign_in_required">Sign-in required</string>
     <string name="status_sign_in_error">Error signing in: %s</string>
     <string name="status_loading">Loading…</string>
@@ -25,5 +24,7 @@
     <string name="play_services_error">Google Play services is not available.  This application will close.</string>
     <string name="close">Close</string>
     <string name="profile_picture">User\'s profile picture.</string>
+    <string name="title_activity_etudiant">EtudiantActivity</string>
+    <string name="title_activity_list_etudiant">ListEtudiant</string>
 
 </resources>
