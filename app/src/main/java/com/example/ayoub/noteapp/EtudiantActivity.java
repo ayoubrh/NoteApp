@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.JSONArray;
@@ -39,31 +40,27 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-
-
-
-
-
+import com.google.android.gms.plus.model.people.Person;
 
 
 public class EtudiantActivity extends ActionBarActivity implements View.OnClickListener {
 
 
+    private static String KEY_SUCCESS = "success";
 
-    Button btnSave ,  btnDelete, btnClose;
+    Button btnSave ,  btnDelete, btnClose, btnEmail;
 
     TextView Nom,Prenom,Email;
     EditText NoteC1;
     EditText NoteC2;
     EditText Autre;
     EditText NoteEx;
-    EditText NoteF;
+    TextView NoteF;
     private int Etudiant_Id = 0;
 
     JSONObject etd=null;
 
+    String f = null;
 
     ListView list;
     TextView ver;
@@ -72,7 +69,10 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
     Button Btngetdata;
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
     //URL to get JSON Array
-    private static String url = "http://10.0.3.2/APIRest/web/app_dev.php/api/etudiants/";
+    private static String url = "http://192.168.1.200/APIRest/web/app_dev.php/api/etudiants/";
+    private static String supurl = "http://192.168.1.200/APIRest/web/app_dev.php/api/supetudiants/";
+    private static String mailurl = "http://192.168.1.200/APIRest/web/app_dev.php/api/supetudiants/";
+
     //JSON Node Names
     private static final String TAG_Etd = "etudiant";
     private static final String TAG_Nom = "_nom";
@@ -84,6 +84,8 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
     private static final String TAG_NoteEx = "_note_ex";
     private static final String TAG_NoteF = "_note_f";
 
+
+    String id = null;
 
     JSONArray android = null;
 
@@ -105,6 +107,7 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
         btnSave = (Button) findViewById(R.id.btnSave);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnClose = (Button) findViewById(R.id.btnClose);
+        btnEmail = (Button) findViewById(R.id.btnEmail);
 
 
         Nom = (TextView)findViewById(R.id.Nom);
@@ -115,7 +118,7 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
         NoteC2 = (EditText) findViewById(R.id.editNoteC2);
         Autre = (EditText) findViewById(R.id.editAutre);
         NoteEx = (EditText) findViewById(R.id.editNoteEx);
-        NoteF = (EditText) findViewById(R.id.editNoteF);
+        NoteF = (TextView) findViewById(R.id.editNoteF);
         btnSave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnClose.setOnClickListener(this);
@@ -124,6 +127,7 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
         //Etudiant_Id =0;
         Intent intent = getIntent();
         Etudiant_Id =intent.getIntExtra("etudiant_Id", 0);
+        prof_id = intent.getIntExtra("PROF_ID", 0);
         System.out.println("*****************ETD ID : "+Etudiant_Id);
         new JSONParse().execute();
         /*EtudiantRepo repo = new EtudiantRepo(this);
@@ -194,25 +198,30 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
                 repo.update(etudiant);
                 Toast.makeText(this,"Etduiant Modifier",Toast.LENGTH_SHORT).show();
             }*/
+            NetAsync(view);
+
+
+
+
+
         }else if (view== findViewById(R.id.btnDelete)){
             /*EtudiantRepo repo = new EtudiantRepo(this);
             repo.delete(_Etudiant_Id);
-            Toast.makeText(this, "Etudiant Supprimer", Toast.LENGTH_SHORT).show();
-            finish();*/
+            Toast.makeText(this, "Etudiant Supprimer", Toast.LENGTH_SHORT).show();*/
+            new Suptask().execute();
+            Intent objIndent = new Intent(getApplicationContext(),ListEtudiant.class);
+            objIndent.putExtra("PROF_ID", prof_id );
+            startActivity(objIndent);
         }else if (view== findViewById(R.id.btnClose)){
             finish();
+        }else if(view== findViewById(R.id.btnEmail)){
+            ///
+            new mailtask().execute();
         }
 
 
+
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -278,6 +287,285 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
 
                 } catch (JSONException e1) {
                 e1.printStackTrace();
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    private class ProcessRegister extends AsyncTask<String, String, JSONObject>{
+        /**
+          * Defining Process dialog
+          **/
+        private ProgressDialog pDialog;
+        //String email,password,fname,lname,uname;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            System.out.println("cccccccccccccccccccc00000000000000000");
+
+            pDialog = new ProgressDialog(EtudiantActivity.this);
+            pDialog.setTitle("Contacting Servers");
+            pDialog.setMessage("Chargement ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            System.out.println("cccccccccccccccccccccccc11111111111111111111111");
+            pDialog.show();
+        }
+        @Override
+        protected JSONObject doInBackground(String... args) {
+            System.out.println("cccccccccccccccccccccccc222222222222222222222");
+
+            UserFunctions userFunction = new UserFunctions();
+            System.out.println("ccccccccccccccccccccccccccccc33333333333333333333");
+
+            /*Person currentPerson = mPlusClient.getCurrentPerson();
+
+            fname = currentPerson.getName().getFamilyName();
+            lname = currentPerson.getName().getGivenName();
+            email=mPlusClient.getAccountName();*/
+
+
+
+            String c1 = NoteC1.getText().toString();
+            System.out.println("Note finale : " + c1);
+
+            String c2 = NoteC2.getText().toString();
+            System.out.println("Note finale : " + c2);
+
+            String ex = NoteEx.getText().toString();
+            String au = Autre.getText().toString();
+
+            Double aid = (Double.parseDouble(c1)*0.2)+(Double.parseDouble(c2)*0.2)+(Double.parseDouble(au)*0.1)+(Double.parseDouble(ex)*(1.0/2.0));
+            System.out.println("Note finale : " + aid);
+            DecimalFormat df = new DecimalFormat("########.00");
+            f = df.format(aid);
+
+            //f = Double.toString(aid);
+            System.out.println("Note finale S : "+f);
+            //f =
+            //NoteF.setText(f);
+
+            //NoteF.setText(f);
+
+            JSONObject json = userFunction.saveNote(c1,c2,ex,au,f,Etudiant_Id);
+            System.out.println("ccccccccccccccccccccc44444444444444444444");
+
+            return json;
+        }
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            /**
+                     * Checks for success message.
+                     **/
+
+            pDialog.dismiss();
+
+            try {
+                System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
+                if (json.getString(KEY_SUCCESS) != null) {
+                    System.out.println("cccccccccccccccccccc55555555555555555");
+
+                    String res = json.getString(KEY_SUCCESS);
+                    System.out.println("ccccccccccccccc66666666666666666666");
+
+                    if(res == "true"){
+                        //id = json.getString("id");
+                        //System.out.println("id  : "+id);
+                        NoteF.setText(f);
+                        Toast.makeText(EtudiantActivity.this, "Information Modifier", Toast.LENGTH_SHORT).show();
+                    }
+
+                    else{
+                        //id=identif(json);
+                        //System.out.println("id  : "+id);
+                        Toast.makeText(EtudiantActivity.this, "Erreur de Modification d'infomation", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //String red = json.getString(KEY_ERROR);
+                    System.out.println("cccccccccccccccccccc777777777777777777777");
+
+
+                    /*Intent objIndent = new Intent(getApplicationContext(),ListEtudiant.class);
+                    objIndent.putExtra("PROF_ID", Integer.parseInt(id));
+                    startActivity(objIndent);*/
+
+
+
+                }else{
+                    Toast.makeText(EtudiantActivity.this, "Erreur", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println("Error c 1 : "+e.getMessage());
+
+            }
+        }
+    }
+
+
+    public void NetAsync(View view){
+        System.out.println("aaaaaaaaaaaaaaaa00000000000000000000");
+
+        new ProcessRegister().execute();
+        System.out.println("aaaaaaaaaaaaaa1111111111111111111111");
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private class Suptask extends AsyncTask<String, String, JSONObject> {
+        private ProgressDialog pDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*ver = (TextView)findViewById(R.id.vers);
+            name = (TextView)findViewById(R.id.name);
+            api = (TextView)findViewById(R.id.api);*/
+            pDialog = new ProgressDialog(EtudiantActivity.this);
+            pDialog.setMessage("Chargement ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+        @Override
+        protected JSONObject doInBackground(String... args) {
+            JSONParser jParser = new JSONParser();
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrl(supurl+Etudiant_Id);
+            return json;
+        }
+        @Override
+        protected void onPostExecute(JSONObject json) {
+
+
+
+
+
+            try {
+                System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
+                if (json.getString(KEY_SUCCESS) != null) {
+                    System.out.println("cccccccccccccccccccc55555555555555555");
+
+                    String res = json.getString(KEY_SUCCESS);
+                    System.out.println("ccccccccccccccc66666666666666666666");
+
+                    if(res == "true"){
+                        //id = json.getString("id");
+                        //System.out.println("id  : "+id);
+                        Toast.makeText(EtudiantActivity.this, "Information Modifier", Toast.LENGTH_SHORT).show();
+                    }
+
+                    else{
+                        //id=identif(json);
+                        //System.out.println("id  : "+id);
+                        pDialog.dismiss();
+                        Toast.makeText(EtudiantActivity.this, "Erreur de Modification d'infomation", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //String red = json.getString(KEY_ERROR);
+                    System.out.println("cccccccccccccccccccc777777777777777777777");
+
+
+                    /*Intent objIndent = new Intent(getApplicationContext(),ListEtudiant.class);
+                    objIndent.putExtra("PROF_ID", Integer.parseInt(id));
+                    startActivity(objIndent);*/
+
+
+
+                }else{
+                    Toast.makeText(EtudiantActivity.this, "Erreur", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println("Error c 1 : "+e.getMessage());
+
+            }
+
+        }
+    }
+
+
+
+    private class mailtask extends AsyncTask<String, String, JSONObject> {
+        private ProgressDialog pDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*ver = (TextView)findViewById(R.id.vers);
+            name = (TextView)findViewById(R.id.name);
+            api = (TextView)findViewById(R.id.api);*/
+            pDialog = new ProgressDialog(EtudiantActivity.this);
+            pDialog.setMessage("Chargement ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+        @Override
+        protected JSONObject doInBackground(String... args) {
+            JSONParser jParser = new JSONParser();
+            // Getting JSON from URL
+            JSONObject json = jParser.getJSONFromUrl(mailurl+Etudiant_Id);
+            return json;
+        }
+        @Override
+        protected void onPostExecute(JSONObject json) {
+
+            try {
+                System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
+                if (json.getString(KEY_SUCCESS) != null) {
+                    System.out.println("cccccccccccccccccccc55555555555555555");
+
+                    String res = json.getString(KEY_SUCCESS);
+                    System.out.println("ccccccccccccccc66666666666666666666");
+
+                    if(res == "true"){
+                        //id = json.getString("id");
+                        //System.out.println("id  : "+id);
+                        Toast.makeText(EtudiantActivity.this, "Resultat envoyer", Toast.LENGTH_SHORT).show();
+                    }
+
+                    else{
+                        //id=identif(json);
+                        //System.out.println("id  : "+id);
+                        pDialog.dismiss();
+                        Toast.makeText(EtudiantActivity.this, "Erreur réessayez plus tard", Toast.LENGTH_SHORT).show();
+                    }
+
+                    //String red = json.getString(KEY_ERROR);
+                    System.out.println("cccccccccccccccccccc777777777777777777777");
+
+
+                    /*Intent objIndent = new Intent(getApplicationContext(),ListEtudiant.class);
+                    objIndent.putExtra("PROF_ID", Integer.parseInt(id));
+                    startActivity(objIndent);*/
+
+
+
+                }else{
+                    Toast.makeText(EtudiantActivity.this, "Erreur", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                System.out.println("Error c 1 : "+e.getMessage());
+
             }
 
         }

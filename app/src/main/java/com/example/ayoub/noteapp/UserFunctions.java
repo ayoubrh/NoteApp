@@ -6,13 +6,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import android.content.Context;
+
 public class UserFunctions {
     private JSONParser jsonParser;
     //URL of the PHP API
-    private static String loginURL = "http://10.0.3.2/learn2crack_login_api/";
-    private static String registerURL = "http://10.0.3.2/APIRest/web/app_dev.php/api/addprofs";//http http://localhost/APIRest/web/app_dev.php/api/addprofs
-    private static String forpassURL = "http://10.0.3.2/learn2crack_login_api/";
-    private static String chgpassURL = "http://10.0.3.2/learn2crack_login_api/";
+    private static String loginURL = "http://192.168.1.200/learn2crack_login_api/";
+    private static String registerURL = "http://192.168.1.200/APIRest/web/app_dev.php/api/addprofs";
+    private static String forpassURL = "http://192.168.1.200/learn2crack_login_api/";
+    private static String NoteURL = "http://192.168.1.200/APIRest/web/app_dev.php/api/modifetudiants/";
     private static String login_tag = "login";
     private static String register_tag = "register";
     private static String forpass_tag = "forpass";
@@ -21,39 +22,22 @@ public class UserFunctions {
     public UserFunctions(){
         jsonParser = new JSONParser();
     }
-    /**
-     * Function to Login
-     **/
-    public JSONObject loginUser(String email, String password){
-        // Building Parameters
-        List params = new ArrayList();
-        params.add(new BasicNameValuePair("tag", login_tag));
-        params.add(new BasicNameValuePair("email", email));
-        params.add(new BasicNameValuePair("password", password));
-        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        return json;
-    }
+
     /**
      * Function to change password
      **/
-    public JSONObject chgPass(String newpas, String email){
+    public JSONObject saveNote(String c1, String c2, String ex, String au, String f,int id){
         List params = new ArrayList();
-        params.add(new BasicNameValuePair("tag", chgpass_tag));
-        params.add(new BasicNameValuePair("newpas", newpas));
-        params.add(new BasicNameValuePair("email", email));
-        JSONObject json = jsonParser.getJSONFromUrl(chgpassURL, params);
+        //params.add(new BasicNameValuePair("tag", note_tag));
+        params.add(new BasicNameValuePair("NoteC1", c1));
+        params.add(new BasicNameValuePair("NoteC2", c2));
+        params.add(new BasicNameValuePair("NoteEx", ex));
+        params.add(new BasicNameValuePair("Autre", au));
+        params.add(new BasicNameValuePair("NoteF", f));
+        JSONObject json = jsonParser.getJSONFromUrl(NoteURL+id, params);
         return json;
     }
-    /**
-     * Function to reset the password
-     **/
-    public JSONObject forPass(String forgotpassword){
-        List params = new ArrayList();
-        params.add(new BasicNameValuePair("tag", forpass_tag));
-        params.add(new BasicNameValuePair("forgotpassword", forgotpassword));
-        JSONObject json = jsonParser.getJSONFromUrl(forpassURL, params);
-        return json;
-    }
+
      /**
       * Function to  Register
       **/

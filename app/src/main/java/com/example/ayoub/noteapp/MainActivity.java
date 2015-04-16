@@ -107,9 +107,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 .setActions("http://schemas.google.com/AddActivity", "http://schemas.google.com/BuyActivity")
                 .build();
 
-
         setContentView(R.layout.activity_main);
-
 
         System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 
@@ -319,7 +317,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         String accountName = mPlusClient.getAccountName();
         System.out.println("444444444444444444444444444444444444");
 
-        Toast.makeText(this, accountName + " is connected.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, accountName + " est connecter.", Toast.LENGTH_LONG).show();
         System.out.println("555555555555555555555555555555555555");
         NetAsync();
 

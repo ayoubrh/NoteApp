@@ -156,7 +156,7 @@
         android:layout_alignLeft="@+id/editNoteEx"
         android:layout_alignStart="@+id/editNoteEx" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
@@ -164,7 +164,10 @@
         android:id="@+id/editNoteF"
         android:layout_alignBottom="@+id/NoteF"
         android:layout_alignLeft="@+id/editAutre"
-        android:layout_alignStart="@+id/editAutre" />
+        android:layout_alignStart="@+id/editAutre"
+        android:layout_alignRight="@+id/editAutre"
+        android:layout_alignEnd="@+id/editAutre"
+        android:layout_alignTop="@+id/NoteF" />
 
     <Button
         android:layout_width="wrap_content"
@@ -172,7 +175,8 @@
         android:text="Enregistrer"
         android:id="@+id/btnSave"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/btnClose" />
+        android:layout_alignLeft="@+id/editNoteF"
+        android:layout_alignStart="@+id/editNoteF" />
 
     <Button
         android:layout_width="wrap_content"
@@ -180,15 +184,27 @@
         android:text="Retour"
         android:id="@+id/btnClose"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignRight="@+id/btnEmail"
+        android:layout_alignEnd="@+id/btnEmail" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Supprimer"
         android:id="@+id/btnDelete"
-        android:layout_alignTop="@+id/btnSave"
-        android:layout_toLeftOf="@+id/btnSave" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/NoteEx"
+        android:layout_alignEnd="@+id/NoteEx" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Envoyer resultat"
+        android:id="@+id/btnEmail"
+        android:layout_above="@+id/btnSave"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/editNoteF"
+        android:layout_alignEnd="@+id/editNoteF" />
 
 </RelativeLayout>
