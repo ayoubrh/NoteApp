@@ -45,7 +45,6 @@ import com.google.android.gms.plus.model.people.Person;
 
 public class EtudiantActivity extends ActionBarActivity implements View.OnClickListener {
 
-
     private static String KEY_SUCCESS = "success";
 
     Button btnSave ,  btnDelete, btnClose, btnEmail;
@@ -69,9 +68,9 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
     Button Btngetdata;
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
     //URL to get JSON Array
-    private static String url = "http://192.168.1.200/APIRest/web/app_dev.php/api/etudiants/";
-    private static String supurl = "http://192.168.1.200/APIRest/web/app_dev.php/api/supetudiants/";
-    private static String mailurl = "http://192.168.1.200/APIRest/web/app_dev.php/api/supetudiants/";
+    private static String url = "http://10.0.3.2/APIRest/web/app_dev.php/api/etudiants/";
+    private static String supurl = "http://10.0.3.2/APIRest/web/app_dev.php/api/supetudiants/";
+    private static String mailurl = "http://10.0.3.2/APIRest/web/app_dev.php/api/notes/";
 
     //JSON Node Names
     private static final String TAG_Etd = "etudiant";
@@ -119,9 +118,11 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
         Autre = (EditText) findViewById(R.id.editAutre);
         NoteEx = (EditText) findViewById(R.id.editNoteEx);
         NoteF = (TextView) findViewById(R.id.editNoteF);
+
         btnSave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnClose.setOnClickListener(this);
+        btnEmail.setOnClickListener(this);
 
 
         //Etudiant_Id =0;
@@ -528,6 +529,8 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
         @Override
         protected void onPostExecute(JSONObject json) {
 
+            pDialog.dismiss();
+
             try {
                 System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
                 if (json.getString(KEY_SUCCESS) != null) {
@@ -545,7 +548,6 @@ public class EtudiantActivity extends ActionBarActivity implements View.OnClickL
                     else{
                         //id=identif(json);
                         //System.out.println("id  : "+id);
-                        pDialog.dismiss();
                         Toast.makeText(EtudiantActivity.this, "Erreur réessayez plus tard", Toast.LENGTH_SHORT).show();
                     }
 

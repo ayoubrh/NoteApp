@@ -9,8 +9,18 @@
     tools:context=".MainActivity" >
     <ListView
         android:id="@+id/list"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_above="@+id/btnEmail" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Envoyer resultat"
+        android:id="@+id/btnEmail"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/list"
+        android:layout_alignEnd="@+id/list" />
 
 </RelativeLayout>

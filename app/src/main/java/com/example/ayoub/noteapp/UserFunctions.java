@@ -10,10 +10,10 @@ import android.content.Context;
 public class UserFunctions {
     private JSONParser jsonParser;
     //URL of the PHP API
-    private static String loginURL = "http://192.168.1.200/learn2crack_login_api/";
-    private static String registerURL = "http://192.168.1.200/APIRest/web/app_dev.php/api/addprofs";
-    private static String forpassURL = "http://192.168.1.200/learn2crack_login_api/";
-    private static String NoteURL = "http://192.168.1.200/APIRest/web/app_dev.php/api/modifetudiants/";
+    private static String loginURL = "http://10.0.3.2/learn2crack_login_api/";
+    private static String registerURL = "http://10.0.3.2/APIRest/web/app_dev.php/api/addprofs";
+    private static String forpassURL = "http://10.0.3.2/learn2crack_login_api/";
+    private static String NoteURL = "http://10.0.3.2/APIRest/web/app_dev.php/api/modifetudiants/";
     private static String login_tag = "login";
     private static String register_tag = "register";
     private static String forpass_tag = "forpass";

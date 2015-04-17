@@ -40,7 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class ListEtudiant extends ActionBarActivity {
+public class ListEtudiant extends ActionBarActivity implements View.OnClickListener{
 
     private static String KEY_SUCCESS = "success";
 
@@ -48,11 +48,11 @@ public class ListEtudiant extends ActionBarActivity {
     TextView ver;
     TextView name;
     TextView api;
-    Button Btngetdata;
+    Button btnEmail;
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
     //URL to get JSON Array
-    private static String url = "http://192.168.1.200/APIRest/web/app_dev.php/api/listetudiants/";
-    private static String mailurl = "http://192.168.1.200/APIRest/web/app_dev.php/api/supetudiants/";
+    private static String url = "http://10.0.3.2/APIRest/web/app_dev.php/api/listetudiants/";
+    private static String mailurl = "http://10.0.3.2/APIRest/web/app_dev.php/api/allnotes/";
 
     //JSON Node Names
     private static final String TAG_OS = "etudiants";
@@ -69,6 +69,8 @@ public class ListEtudiant extends ActionBarActivity {
         setContentView(R.layout.activity_list_etudiant);
 
         oslist = new ArrayList<HashMap<String, String>>();
+        btnEmail = (Button)findViewById(R.id.btnEmail);
+        btnEmail.setOnClickListener(this);
 
         Intent intent = getIntent();
         prof_id = intent.getIntExtra("PROF_ID", 0);
@@ -100,6 +102,15 @@ public class ListEtudiant extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == findViewById(R.id.btnEmail)){
+            ///
+            new mailtask().execute();
+        }
+
     }
 
 
@@ -193,6 +204,7 @@ public class ListEtudiant extends ActionBarActivity {
         }
         @Override
         protected void onPostExecute(JSONObject json) {
+            pDialog.dismiss();
 
             try {
                 System.out.println("ecscsv : "+json.getString(KEY_SUCCESS));
@@ -211,7 +223,6 @@ public class ListEtudiant extends ActionBarActivity {
                     else{
                         //id=identif(json);
                         //System.out.println("id  : "+id);
-                        pDialog.dismiss();
                         Toast.makeText(ListEtudiant.this, "Erreur réessayez plus tard", Toast.LENGTH_SHORT).show();
                     }
 
